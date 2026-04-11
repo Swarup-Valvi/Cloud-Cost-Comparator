@@ -1,6 +1,6 @@
 // src/components/App.jsx
-import React, { useState } from 'react';
-import { RefreshCw, CheckCircle } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { RefreshCw, CheckCircle, Sun, Moon } from 'lucide-react';
 
 // Import all pages and utilities
 import TechStackPage from './Pages/TechStackPage';
@@ -11,7 +11,7 @@ import { initialInputs, calculateCosts, useCaseFitAnalysis } from '../utils/clou
 // Import CSS
 import '../styles/App.css'; 
 
-// --- Step Indicator Component (Moved from original inline definition) ---
+// --- Step Indicator Component ---
 
 const StepIndicator = ({ currentStep }) => {
     const steps = ['Tech Stack', 'Configuration', 'Results'];
@@ -42,6 +42,21 @@ const StepIndicator = ({ currentStep }) => {
     );
 };
 
+// --- Dark Mode Toggle ---
+
+const DarkModeToggle = ({ darkMode, setDarkMode }) => (
+    <div className="ccc-dark-toggle-wrapper">
+        <button
+            className="ccc-dark-toggle-btn"
+            onClick={() => setDarkMode(!darkMode)}
+            aria-label="Toggle dark mode"
+            title={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+        >
+            {darkMode ? <Sun size={20} /> : <Moon size={20} />}
+        </button>
+    </div>
+);
+
 // --- Main Application Component ---
 
 const App = () => {
@@ -49,6 +64,14 @@ const App = () => {
     const [inputs, setInputs] = useState(initialInputs);
     const [results, setResults] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
+    const [darkMode, setDarkMode] = useState(false);
+    const [billingPeriod, setBillingPeriod] = useState('monthly'); // 'monthly' or 'yearly'
+
+    // Apply dark mode class to body
+    useEffect(() => {
+        document.body.classList.toggle('dark-mode', darkMode);
+        return () => document.body.classList.remove('dark-mode');
+    }, [darkMode]);
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -63,6 +86,7 @@ const App = () => {
         setInputs(initialInputs);
         setResults(null);
         setPage('techStack');
+        setBillingPeriod('monthly');
     };
 
     const runComparison = () => {
@@ -112,10 +136,12 @@ const App = () => {
     };
 
     return (
-        <div style={{ fontFamily: "'Inter', sans-serif" }} className="ccc-main-container">
+        <div style={{ fontFamily: "'Inter', 'Outfit', sans-serif" }} className="ccc-main-container">
+            <DarkModeToggle darkMode={darkMode} setDarkMode={setDarkMode} />
+            
             <header className="ccc-header-wrapper">
                 <h1 className="ccc-title-4xl">
-                    <RefreshCw size={32} style={{ marginRight: '0.75rem' }} color="#4F46E5" />
+                    <RefreshCw size={32} style={{ marginRight: '0.75rem' }} color={darkMode ? '#818cf8' : '#4F46E5'} />
                     Cloud Cost Comparator & Advisor
                 </h1>
                 <p className="ccc-text-lg ccc-text-gray-500 ccc-mt-2">A guided multi-cloud cost analysis for your specific stack.</p>
@@ -126,7 +152,7 @@ const App = () => {
 
                 {page === 'techStack' && <TechStackPage inputs={inputs} handleChange={handleChange} setPage={setPage} />}
                 {page === 'configuration' && <ConfigurationPage inputs={inputs} handleChange={handleChange} runComparison={runComparison} setPage={setPage} isLoading={isLoading} />}
-                {page === 'results' && <ResultsPage results={results} inputs={inputs} handleReset={handleReset} setPage={setPage} />}
+                {page === 'results' && <ResultsPage results={results} inputs={inputs} handleReset={handleReset} setPage={setPage} billingPeriod={billingPeriod} setBillingPeriod={setBillingPeriod} />}
             </div>
         </div>
     );
