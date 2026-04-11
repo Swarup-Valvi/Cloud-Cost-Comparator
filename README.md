@@ -116,11 +116,13 @@ cloud-cost-comparator/
 🧠 AI-driven cost optimization suggestions
 
 
-**Author:** Rakesh T (Rocky)  
-👨‍💻 B.Tech in Artificial Intelligence & Data Science  
-📫 [rakeshthangaraj89@gmail.com](mailto:rakeshthangaraj89@gmail.com)
+**Author:** 
+Swarup Valvi 16010423103
+Tanay Sawant 16010423104
+Manthan Rondhe 16010424808
+KJ Somaiya School of Engineering 
 
-🚀 Passionate about Web Tech, Cloud, and GenAI-powered solutions.
+
 
 🪪 License
 
