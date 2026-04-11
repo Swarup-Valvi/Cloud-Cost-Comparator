@@ -118,7 +118,9 @@ cloud-cost-comparator/
 
 **Author:** 
 Swarup Valvi 16010423103
+
 Tanay Sawant 16010423104
+
 Manthan Rondhe 16010424808
 KJ Somaiya School of Engineering 
 
