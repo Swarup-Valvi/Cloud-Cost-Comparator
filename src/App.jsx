@@ -66,6 +66,8 @@ const App = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [darkMode, setDarkMode] = useState(false);
     const [billingPeriod, setBillingPeriod] = useState('monthly'); // 'monthly' or 'yearly'
+    const [currency, setCurrency] = useState('USD'); // 'USD' or 'INR'
+    const EXCHANGE_RATE = 83.5; // Current approximate USD to INR rate
 
     // Apply dark mode class to body
     useEffect(() => {
@@ -89,50 +91,82 @@ const App = () => {
         setBillingPeriod('monthly');
     };
 
-    const runComparison = () => {
-        // Simple client-side simulation delay
+    const [history, setHistory] = useState([]);
+    const [latencies, setLatencies] = useState(null);
+
+    const fetchHistory = async () => {
+        try {
+            const res = await fetch('http://localhost:5001/api/history');
+            const data = await res.json();
+            setHistory(data);
+        } catch (err) {
+            console.error('Failed to fetch history', err);
+        }
+    };
+
+    const fetchLatencies = async (region) => {
+        try {
+            const res = await fetch(`http://localhost:5001/api/ping?region=${region}`);
+            const data = await res.json();
+            setLatencies(data);
+        } catch (err) {
+            console.error('Failed to fetch latencies', err);
+        }
+    };
+
+    const runComparison = async () => {
         setIsLoading(true);
         setResults(null);
 
-        setTimeout(() => {
-            const calculatedCosts = calculateCosts(inputs);
-            const sortedCosts = Object.entries(calculatedCosts).sort((a, b) => a[1].total - b[1].total);
+        try {
+            const response = await fetch('http://localhost:5001/api/compare', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ inputs })
+            });
+            const calculatedCosts = await response.json();
             
+            await fetchLatencies(inputs.region);
+            await fetchHistory();
+
+            const sortedCosts = Object.entries(calculatedCosts).sort((a, b) => a[1].total - b[1].total);
             const cheapest = sortedCosts[0];
             const mostExpensive = sortedCosts[sortedCosts.length - 1];
-
             let savingsPercent = mostExpensive[1].total > 0 ? ((mostExpensive[1].total - cheapest[1].total) / mostExpensive[1].total) * 100 : 0;
             
-            let recommendation = cheapest[0];
-            const cheapestSuitability = useCaseFitAnalysis(inputs.useCase, cheapest[0], inputs).suitability;
-            
-            // Determine the most suitable provider based on fit
             const mostSuitable = Object.keys(calculatedCosts).sort((a, b) => {
                 const aFit = useCaseFitAnalysis(inputs.useCase, a, inputs).suitability === 'High' ? 2 : 1;
                 const bFit = useCaseFitAnalysis(inputs.useCase, b, inputs).suitability === 'High' ? 2 : 1;
                 return bFit - aFit;
             })[0];
             
-            // Adjust recommendation if performance is high priority and the most suitable option is close in cost
+            let recommendation = cheapest[0];
             if (inputs.performanceWeight > 7 && useCaseFitAnalysis(inputs.useCase, mostSuitable, inputs).suitability === 'High') {
-                // If performance is key and most suitable option is within 10% of cheapest, recommend suitable
                 if ((calculatedCosts[mostSuitable].total - cheapest[1].total) / cheapest[1].total <= 0.10) {
                       recommendation = mostSuitable;
                 }
-            } else if (cheapestSuitability !== 'High' && useCaseFitAnalysis(inputs.useCase, mostSuitable, inputs).suitability === 'High') {
-                // If cheapest option is only medium fit, but another is high fit, recommend the high fit option
+            } else if (useCaseFitAnalysis(inputs.useCase, cheapest[0], inputs).suitability !== 'High' && useCaseFitAnalysis(inputs.useCase, mostSuitable, inputs).suitability === 'High') {
                 recommendation = mostSuitable;
             }
-
 
             setResults({
                 costs: calculatedCosts,
                 cheapest: cheapest[0], mostExpensive: mostExpensive[0],
                 savings: savingsPercent.toFixed(1), recommendation,
             });
-            setIsLoading(false);
             setPage('results');
-        }, 800);
+        } catch (error) {
+            console.error('Error running comparison:', error);
+            // Fallback to local calculation if backend fails
+            const localResults = calculateCosts(inputs);
+            setResults({
+                costs: localResults,
+                cheapest: 'AWS', mostExpensive: 'GCP', savings: '0', recommendation: 'AWS'
+            });
+            setPage('results');
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -152,7 +186,7 @@ const App = () => {
 
                 {page === 'techStack' && <TechStackPage inputs={inputs} handleChange={handleChange} setPage={setPage} />}
                 {page === 'configuration' && <ConfigurationPage inputs={inputs} handleChange={handleChange} runComparison={runComparison} setPage={setPage} isLoading={isLoading} />}
-                {page === 'results' && <ResultsPage results={results} inputs={inputs} handleReset={handleReset} setPage={setPage} billingPeriod={billingPeriod} setBillingPeriod={setBillingPeriod} />}
+                {page === 'results' && <ResultsPage results={results} inputs={inputs} handleReset={handleReset} setPage={setPage} billingPeriod={billingPeriod} setBillingPeriod={setBillingPeriod} currency={currency} setCurrency={setCurrency} exchangeRate={EXCHANGE_RATE} history={history} latencies={latencies} />}
             </div>
         </div>
     );

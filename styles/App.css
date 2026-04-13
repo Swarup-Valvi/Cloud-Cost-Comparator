@@ -1310,3 +1310,345 @@ body.dark-mode .ccc-usecase-badge-budget { color: #fbbf24; }
   background: var(--accent-primary);
   color: white;
 }
+/* ═══════════════════════════════════════════
+   LATENCY CHECKER & PRICE HISTORY
+   ═══════════════════════════════════════════ */
+
+.ccc-latency-section, .ccc-history-section {
+  background: var(--bg-card);
+  padding: 1.5rem;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-primary);
+  box-shadow: var(--shadow-md);
+  height: 100%;
+}
+
+.ccc-latency-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-top: 1rem;
+}
+
+.ccc-latency-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.ccc-latency-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100px;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.ccc-latency-bar-container {
+  flex: 1;
+  height: 8px;
+  background: var(--bg-input);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.ccc-latency-bar {
+  height: 100%;
+  border-radius: var(--radius-full);
+  transition: width 1s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.ccc-latency-bar-aws { background: var(--chart-aws); }
+.ccc-latency-bar-azure { background: var(--chart-azure); }
+.ccc-latency-bar-gcp { background: var(--chart-gcp); }
+
+.ccc-latency-value {
+  width: 50px;
+  text-align: right;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.ccc-history-chart {
+  height: 150px;
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  border-bottom: 2px solid var(--border-primary);
+  padding-bottom: 4px;
+  position: relative;
+  margin-top: 2rem;
+}
+
+.ccc-history-point-wrapper {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+  position: relative;
+}
+
+.ccc-history-point {
+  width: 100%;
+  border-radius: 2px 2px 0 0;
+  transition: height 0.5s ease;
+  cursor: pointer;
+  opacity: 0.7;
+}
+
+.ccc-history-point:hover {
+  opacity: 1;
+  filter: brightness(1.1);
+}
+
+.ccc-history-point-aws { background: var(--chart-aws); }
+.ccc-history-point-azure { background: var(--chart-azure); }
+.ccc-history-point-gcp { background: var(--chart-gcp); }
+
+.ccc-history-legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 0.25rem;
+}
+
+.ccc-history-legend-dot-aws { background: var(--chart-aws); }
+.ccc-history-legend-dot-azure { background: var(--chart-azure); }
+.ccc-history-legend-dot-gcp { background: var(--chart-gcp); }
+
+@media (max-width: 768px) {
+  .ccc-grid-responsive-2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* --- Serverless & Managed DB Custom Styles --- */
+.ccc-category-card-serverless {
+  border-left: 4px solid #8b5cf6;
+}
+.ccc-category-card-icon-serverless {
+  background: rgba(139, 92, 246, 0.1);
+  color: #8b5cf6;
+}
+
+.ccc-tag-free {
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: #10b981;
+  background: #d1fae5;
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+  margin-left: 0.5rem;
+  text-transform: uppercase;
+}
+
+/* Enhancing existing cards for new categories */
+.ccc-category-cards-wrapper {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+/* --- Final Polish & Responsive Tweaks --- */
+@media (max-width: 640px) {
+  .ccc-grid-responsive-2 {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+  
+  .ccc-config-section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  
+  .ccc-button-base {
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
+  }
+  
+  .ccc-title-4xl {
+    font-size: 1.75rem;
+  }
+}
+
+.ccc-input-group {
+  animation: fade-in 0.4s ease-out forwards;
+}
+
+/* Specific styling for new GPU and Serverless sections */
+.ccc-gpu-highlight {
+  border: 1.5px solid var(--accent-warning);
+  background: var(--accent-warning-bg);
+}
+
+.ccc-serverless-group {
+  border-left: 3px solid var(--accent-primary);
+  padding-left: 1rem;
+  margin-top: 1rem;
+  animation: slide-up 0.3s ease-out;
+}
+
+/* --- Advanced Features Styling --- */
+.ccc-nist-tag {
+  font-size: 0.6rem;
+  font-weight: 800;
+  background: #e2e8f0;
+  color: #475569;
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.ccc-carbon-badge {
+  display: flex;
+  align-items: center;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: white;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.ccc-tag-arm {
+  background: #6366f1;
+  color: white;
+  font-size: 0.6rem;
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+  font-weight: 700;
+}
+
+.ccc-flex-items.ccc-justify-between {
+  justify-content: space-between;
+}
+
+.ccc-ml-4 {
+  margin-left: 1rem;
+}
+
+/* --- ROI & Latency Map Styles --- */
+.ccc-roi-card {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.ccc-roi-highlight {
+  background: #f0fdf4;
+  border: 1px dashed #22c55e;
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.ccc-roi-percentage {
+  background: #22c55e;
+  color: white;
+  font-weight: 800;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-size: 1.1rem;
+}
+
+.ccc-latency-map-container {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  border: 1px solid #e2e8f0;
+}
+
+.ccc-world-map {
+  position: relative;
+  width: 100%;
+  height: 250px;
+  background: #f8fafc;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #cbd5e1;
+}
+
+.ccc-map-node {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  items-align: center;
+  z-index: 2;
+}
+
+.ccc-node-dot {
+  width: 10px;
+  height: 10px;
+  background: #64748b;
+  border-radius: 50%;
+  border: 2px solid white;
+}
+
+.ccc-map-node.active .ccc-node-dot {
+  background: #ef4444;
+  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.3);
+  width: 12px;
+  height: 12px;
+}
+
+.ccc-node-label {
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: #475569;
+  margin-top: 4px;
+}
+
+.ccc-node-ping {
+  font-size: 0.6rem;
+  color: #ef4444;
+  font-weight: bold;
+}
+
+.ccc-map-lines {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+
+.ccc-line-path {
+  stroke: #cbd5e1;
+  stroke-width: 1;
+  stroke-dasharray: 4;
+}
+
+/* --- Health Dashboard --- */
+.ccc-footer {
+  padding: 2rem;
+  margin-top: 4rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.ccc-health-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.ccc-health-dot.online { background: #10b981; box-shadow: 0 0 8px rgba(16, 185, 129, 0.4); }
+.ccc-health-dot.offline { background: #ef4444; }
+
+.ccc-button-outline {
+  border: 1px solid #e2e8f0;
+  background: white;
+  color: #475569;
+}
+
+.ccc-button-outline:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+}

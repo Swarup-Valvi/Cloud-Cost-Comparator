@@ -20,33 +20,79 @@ const ConfigurationPage = ({ inputs, handleChange, runComparison, setPage, isLoa
                 <div className="ccc-grid-responsive-2 ccc-gap-x-8 ccc-gap-y-6">
                     {/* Use Case & Region */}
                     <InputGroup icon={<Globe size={18} color="#6366f1" />} label="Use Case" name="useCase" value={inputs.useCase} onChange={handleChange} type="select" options={['Software Development', 'Big Data Analytics', 'Machine Learning/AI', 'Web Hosting', 'Database Management', 'IoT', 'Enterprise Apps']} />
-                    <InputGroup icon={<Globe size={18} color="#6366f1" />} label="Region" name="region" value={inputs.region} onChange={handleChange} type="select" options={['US-East', 'Europe-West', 'Asia-South']} />
+                    <InputGroup icon={<Globe size={18} color="#6366f1" />} label="Region" name="region" value={inputs.region} onChange={handleChange} type="select" options={['US-East', 'Europe-West', 'Asia-South', 'Mumbai']} />
                     
-                    {/* Compute */}
-                    <InputGroup icon={<Cpu size={18} color="#8b5cf6" />} label="vCPUs per Instance" name="vCPUs" value={inputs.vCPUs} onChange={handleChange} type="number" min="1" step="4" />
-                    <InputGroup icon={<Cpu size={18} color="#8b5cf6" />} label="RAM (GB) per Instance" name="ramPerInstance" value={inputs.ramPerInstance} onChange={handleChange} type="number" min="1" step="4" />
-                    
+                    {/* Compute & GPU */}
                     <div className="ccc-col-span-full">
-                        <InputGroup icon={<Cpu size={18} color="#8b5cf6" />} label="Number of Instances" name="numInstances" value={inputs.numInstances} onChange={handleChange} type="number" min="1" step="1" />
+                        <div className="ccc-flex-items ccc-justify-between">
+                            <h4 className="ccc-text-xs ccc-font-bold ccc-text-gray-400">COMPUTE (NIST: IaaS)</h4>
+                            <div className="ccc-flex-items ccc-gap-2">
+                                <span className={inputs.architecture === 'Arm' ? 'ccc-text-indigo-600 ccc-font-bold' : ''}>Arm</span>
+                                <InputToggle name="architecture" checked={inputs.architecture === 'Arm'} onChange={(e) => handleChange({ target: { name: 'architecture', value: e.target.checked ? 'Arm' : 'x86_64' } })} />
+                                <span className={inputs.architecture === 'x86_64' ? 'ccc-text-indigo-600 ccc-font-bold' : ''}>x86</span>
+                            </div>
+                        </div>
                     </div>
+                    <InputGroup icon={<Cpu size={18} color="#8b5cf6" />} label="vCPUs / Instance" name="vCPUs" value={inputs.vCPUs} onChange={handleChange} type="number" min="1" step="4" />
+                    <InputGroup icon={<Cpu size={18} color="#8b5cf6" />} label="RAM (GB) / Instance" name="ramPerInstance" value={inputs.ramPerInstance} onChange={handleChange} type="number" min="1" step="4" />
+                    <InputGroup icon={<Zap size={18} color="#f59e0b" />} label="GPU Type" name="gpuType" value={inputs.gpuType} onChange={handleChange} type="select" options={['None', 'T4', 'V100', 'A100']} />
+                    <InputGroup icon={<Cpu size={18} color="#8b5cf6" />} label="Quantity" name="numInstances" value={inputs.numInstances} onChange={handleChange} type="number" min="1" step="1" />
 
                     {/* Storage */}
-                    <InputGroup icon={<HardDrive size={18} color="#10b981" />} label="Total Storage (GB)" name="storageSize" value={inputs.storageSize} onChange={handleChange} type="number" min="1" step="100" />
-                    <InputGroup icon={<HardDrive size={18} color="#10b981" />} label="Storage Type" name="storageType" value={inputs.storageType} onChange={handleChange} type="select" options={['SSD/Standard', 'Cold/Archive']} />
+                    <div className="ccc-col-span-full">
+                        <h4 className="ccc-text-xs ccc-font-bold ccc-text-gray-400">STORAGE (NIST: IaaS)</h4>
+                    </div>
+                    <InputGroup icon={<HardDrive size={18} color="#10b981" />} label="Block Storage (GB)" name="storageSize" value={inputs.storageSize} onChange={handleChange} type="number" min="1" step="100" />
+                    <InputGroup icon={<HardDrive size={18} color="#10b981" />} label="Object Storage (GB)" name="objectStorageSize" value={inputs.objectStorageSize} onChange={handleChange} type="number" min="1" step="100" />
                     
                     {/* Database */}
-                    <InputGroup icon={<Database size={18} color="#3b82f6" />} label="Database Size (GB)" name="dbSize" value={inputs.dbSize} onChange={handleChange} type="number" min="1" step="100" />
-                    <InputGroup icon={<Database size={18} color="#3b82f6" />} label="Database Type" name="dbType" value={inputs.dbType} onChange={handleChange} type="select" options={['SQL', 'NoSQL']} />
+                    <div className="ccc-col-span-full">
+                        <h4 className="ccc-text-xs ccc-font-bold ccc-text-gray-400">DATABASE (NIST: PaaS)</h4>
+                    </div>
+                    <InputGroup icon={<Database size={18} color="#3b82f6" />} label="DB Size (GB)" name="dbSize" value={inputs.dbSize} onChange={handleChange} type="number" min="1" step="100" />
+                    <div className="ccc-flex-items" style={{ gap: '1rem' }}>
+                        <InputGroup icon={<Database size={18} color="#3b82f6" />} label="DB Type" name="dbType" value={inputs.dbType} onChange={handleChange} type="select" options={['SQL', 'NoSQL']} />
+                        <InputToggle label="Managed" name="isManagedDB" checked={inputs.isManagedDB === 'Yes'} onChange={handleChange} />
+                    </div>
                     
                     {/* Networking */}
                     <div className="ccc-col-span-full">
-                        <InputGroup icon={<Globe size={18} color="#f59e0b" />} label="Networking Egress (GB/month)" name="networkingBandwidth" value={inputs.networkingBandwidth} onChange={handleChange} type="number" min="1" step="100" />
+                        <h4 className="ccc-text-xs ccc-font-bold ccc-text-gray-400">NETWORKING (NIST: IaaS)</h4>
                     </div>
+                    <InputGroup icon={<Globe size={18} color="#f59e0b" />} label="Egress (GB/mo)" name="networkingBandwidth" value={inputs.networkingBandwidth} onChange={handleChange} type="number" min="1" step="100" />
+                    {inputs.region === 'Mumbai' && (
+                        <InputGroup icon={<Globe size={18} color="#ef4444" />} label="Mumbai -> World" name="egressMumbaiToWorld" value={inputs.egressMumbaiToWorld} onChange={handleChange} type="number" min="0" step="10" />
+                    )}
+
+                    {/* LLM Estimator */}
+                    {inputs.aiMlIntegration === 'Yes' && (
+                        <div className="ccc-col-span-full ccc-serverless-group" style={{ borderColor: '#ec4899', background: 'rgba(236, 72, 153, 0.05)', padding: '1rem', borderRadius: '8px' }}>
+                            <h4 className="ccc-text-xs ccc-font-bold ccc-text-pink-600 ccc-mb-3">LLM TOKEN ESTIMATOR (NIST: SaaS)</h4>
+                            <div className="ccc-grid-responsive-2 ccc-gap-4">
+                                <InputGroup icon={<Settings size={16} />} label="Daily Messages" name="dailyMessages" value={inputs.dailyMessages} onChange={handleChange} type="number" />
+                                <InputGroup icon={<Settings size={16} />} label="Tokens / Msg" name="avgTokensPerMessage" value={inputs.avgTokensPerMessage} onChange={handleChange} type="number" />
+                                <div className="ccc-col-span-full">
+                                    <InputGroup icon={<Settings size={16} />} label="Model Class" name="llmModel" value={inputs.llmModel} onChange={handleChange} type="select" options={['GPT-4 class', 'GPT-3.5 / Gemini class']} />
+                                </div>
+                            </div>
+                        </div>
+                    )}
                     
                     {/* Pricing */}
                     <div className="ccc-col-span-full">
                         <InputGroup icon={<BarChart2 size={18} color="#ec4899" />} label="Pricing Model" name="pricingModel" value={inputs.pricingModel} onChange={handleChange} type="select" options={['On-demand', 'Reserved (1yr)', 'Reserved (3yr)', 'Spot/Preemptible']} />
                     </div>
+
+                    {/* Serverless Details */}
+                    {inputs.serverlessOptions === 'Yes' && (
+                        <div className="ccc-col-span-full ccc-serverless-group">
+                             <h4 className="ccc-text-xs ccc-font-bold ccc-text-indigo-600 ccc-mb-3">SERVERLESS (NIST: PaaS)</h4>
+                             <div className="ccc-grid-responsive-2 ccc-gap-4">
+                                <InputGroup icon={<Code size={18} color="#6366f1" />} label="Monthly Requests" name="serverlessRequests" value={inputs.serverlessRequests} onChange={handleChange} type="number" min="0" step="100000" />
+                                <InputGroup icon={<Code size={18} color="#6366f1" />} label="Avg Duration (ms)" name="serverlessDurationMs" value={inputs.serverlessDurationMs} onChange={handleChange} type="number" min="1" step="50" />
+                             </div>
+                        </div>
+                    )}
                 </div>
             </div>
             
@@ -62,10 +108,12 @@ const ConfigurationPage = ({ inputs, handleChange, runComparison, setPage, isLoa
                 
                 <div className="ccc-space-y-4">
                     <InputToggle label={<><Zap size={16} style={{ marginRight: '0.25rem' }} color="#CA8A04" /> Auto-scaling / Elasticity</>} name="autoScaling" checked={inputs.autoScaling === 'Yes'} onChange={handleChange} />
-                    <InputToggle label={<><Code size={16} style={{ marginRight: '0.25rem' }} color="#2563EB" /> Serverless options (e.g., Lambda)</>} name="serverlessOptions" checked={inputs.serverlessOptions === 'Yes'} onChange={handleChange} />
-                    <InputToggle label={<><Database size={16} style={{ marginRight: '0.25rem' }} color="#10B981" /> AI/ML Integration (e.g., specific APIs)</>} name="aiMlIntegration" checked={inputs.aiMlIntegration === 'Yes'} onChange={handleChange} />
-                    <InputToggle label={<><CheckCircle size={16} style={{ marginRight: '0.25rem' }} color="#4F46E5" /> High Availability (Multi-AZ)</>} name="highAvailability" checked={inputs.highAvailability === 'Yes'} onChange={handleChange} />
-                    <InputToggle label={<><Leaf size={16} style={{ marginRight: '0.25rem' }} color="#65A30D" /> Sustainability focus</>} name="sustainabilityFocus" checked={inputs.sustainabilityFocus === 'Yes'} onChange={handleChange} />
+                    <InputToggle label={<><Code size={16} style={{ marginRight: '0.25rem' }} color="#2563EB" /> Serverless features</>} name="serverlessOptions" checked={inputs.serverlessOptions === 'Yes'} onChange={handleChange} />
+                    <InputToggle label={<><Database size={16} style={{ marginRight: '0.25rem' }} color="#10B981" /> AI/ML Integration (LLM)</>} name="aiMlIntegration" checked={inputs.aiMlIntegration === 'Yes'} onChange={handleChange} />
+                    <InputToggle label={<><CheckCircle size={16} style={{ marginRight: '0.25rem' }} color="#4F46E5" /> High Availability</>} name="highAvailability" checked={inputs.highAvailability === 'Yes'} onChange={handleChange} />
+                    <InputToggle label={<><Leaf size={16} style={{ marginRight: '0.25rem' }} color="#65A30D" /> Free Tier Only</>} name="freeTierOnly" checked={inputs.freeTierOnly === 'Yes'} onChange={handleChange} />
+                    <InputToggle label={<><CheckCircle size={16} style={{ marginRight: '0.4rem' }} color="#10B981" /> Security & Compliance Bundle</>} name="securityBundle" checked={inputs.securityBundle === 'Yes'} onChange={handleChange} />
+                    
                     
                     <div style={{ paddingTop: '1rem' }}>
                         <label className="ccc-label ccc-mb-2">Performance Weight ({inputs.performanceWeight} / 10)</label>
@@ -81,17 +129,17 @@ const ConfigurationPage = ({ inputs, handleChange, runComparison, setPage, isLoa
                     </div>
                     
                     <div style={{ paddingTop: '1rem' }}>
-                        <label className="ccc-label ccc-mb-2">Future Cost Projection (Up to {inputs.futureProjectionMonths} months)</label>
+                        <label className="ccc-label ccc-mb-2">Cost Projection ({inputs.futureProjectionMonths} months)</label>
                         <input 
                             type="range" 
                             name="futureProjectionMonths" 
-                            min="0" max="36" 
-                            step="3" 
+                            min="1" max="60" 
+                            step="1" 
                             value={inputs.futureProjectionMonths} 
                             onChange={handleChange} 
                             className="ccc-range-slider" 
                         />
-                        <div className="ccc-range-labels"><span>0 months</span><span>36 months</span></div>
+                        <div className="ccc-range-labels"><span>1 mo</span><span>60 mo</span></div>
                     </div>
                 </div>
             </div>
