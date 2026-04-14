@@ -107,8 +107,3 @@ Swarup Valvi 16010423103, Tanay Sawant 16010423104, Manthan Rondhe 16010424808.
 Distributed under the MIT License.
 
 ---
-
-### **Final GitHub Push Checklist:**
-1. **README.md:** Update with the content above.
-2. **Commit Message:** `git commit -m "Refactor: Update to Cloud-Native documentation and NIST SECaaS mapping"`
-3. **Push:** Your project is now ready for the final submission!
