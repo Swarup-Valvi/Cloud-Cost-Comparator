@@ -114,6 +114,18 @@ const App = () => {
         }
     };
 
+    // Real-time updates effect
+    useEffect(() => {
+        let interval;
+        if (page === 'results' && results) {
+            interval = setInterval(() => {
+                fetchLatencies(inputs.region);
+                fetchHistory();
+            }, 5000); // Update every 5 seconds
+        }
+        return () => clearInterval(interval);
+    }, [page, results, inputs.region]);
+
     const runComparison = async () => {
         setIsLoading(true);
         setResults(null);
