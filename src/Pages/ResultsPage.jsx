@@ -181,14 +181,16 @@ const LatencyChecker = ({ latencies, region }) => {
 };
 
 // --- Price History Graph ---
-const PriceHistoryGraph = ({ history }) => {
+const PriceHistoryGraph = ({ history, currency, exchangeRate }) => {
     if (!history || history.length === 0) return null;
 
     // Process history data for visualization
     const providers = ['AWS', 'Azure', 'GCP'];
     const last10 = history.slice(-30); // Last 10 comparisons
     
-    const maxCost = Math.max(...last10.map(h => h.totalCost));
+    const curMultiplier = currency === 'INR' ? exchangeRate : 1;
+    const curSymbol = currency === 'INR' ? '₹' : '$';
+    const maxCost = Math.max(...last10.map(h => h.totalCost * curMultiplier));
 
     return (
         <div className="ccc-history-section">
@@ -201,10 +203,10 @@ const PriceHistoryGraph = ({ history }) => {
                         <div 
                             className={`ccc-history-point ccc-history-point-${h.provider.toLowerCase()}`}
                             style={{ 
-                                height: `${(h.totalCost / maxCost) * 150}px`,
+                                height: `${((h.totalCost * curMultiplier) / maxCost) * 150}px`,
                                 left: `${(i / last10.length) * 100}%`
                             }}
-                            title={`${h.provider}: $${h.totalCost} at ${new Date(h.timestamp).toLocaleTimeString()}`}
+                            title={`${h.provider}: ${curSymbol}${(h.totalCost * curMultiplier).toFixed(2)} at ${new Date(h.timestamp).toLocaleTimeString()}`}
                         ></div>
                     </div>
                 ))}
@@ -344,7 +346,7 @@ const ResultsPage = ({ results, inputs, handleReset, setPage, billingPeriod, set
                 {/* Performance & Price Analysis Grid */}
                 <div className="ccc-grid-responsive-2 ccc-gap-8">
                      <LatencyChecker latencies={latencies} region={inputs.region} />
-                     <PriceHistoryGraph history={history} />
+                     <PriceHistoryGraph history={history} currency={currency} exchangeRate={exchangeRate} />
                 </div>
 
                 {/* Cost Breakdown Category Cards */}
